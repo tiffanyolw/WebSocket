@@ -11,6 +11,8 @@ export class AppComponent implements OnInit, OnDestroy {
   title = 'websocket-ui';
   messages: any[] = [];
   private messageSubscription!: Subscription
+  items: any[] = [];
+  private itemSubscription!: Subscription
 
   constructor(private webSocketService: WebsocketService) {}
 
@@ -18,7 +20,7 @@ export class AppComponent implements OnInit, OnDestroy {
     this.messageSubscription = this.webSocketService.getMessages().subscribe(
       message => {
         console.log(JSON.stringify(message))
-        this.messages.push(message);
+        this.messages.push(JSON.stringify(message));
       }
     );
   }

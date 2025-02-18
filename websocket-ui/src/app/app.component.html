@@ -6,6 +6,9 @@
   <button (click)="sendMessage()">Send Message</button>
 </div>
 <br/>
-<div *ngFor="let message of messages">
+<!--<div *ngFor="let message of messages">
   Source: {{message.source}}, Content: {{message.content}}
+</div>-->
+<div *ngFor="let message of messages">
+  {{message}}
 </div>
