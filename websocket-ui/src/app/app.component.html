@@ -2,13 +2,32 @@
   {{ title }}
 </h1>
 <br/>
-<div>
+
+<!--<div>
   <button (click)="sendMessage()">Send Message</button>
 </div>
-<br/>
+<br/>-->
+
+<table border="1">
+  <thead>
+    <tr>
+        <th *ngFor="let col of cols">
+            {{ col }}
+        </th>
+    </tr>
+  </thead>
+  <tbody>
+      <tr *ngFor="let row of messages">
+          <td *ngFor="let col of cols">
+              {{ get_value(row, col)}}
+          </td>
+      </tr>
+  </tbody>
+</table>
+
 <!--<div *ngFor="let message of messages">
   Source: {{message.source}}, Content: {{message.content}}
 </div>-->
-<div *ngFor="let message of messages">
+<!--<div *ngFor="let message of messages">
   {{message}}
-</div>
+</div>-->

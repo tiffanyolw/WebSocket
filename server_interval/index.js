@@ -22,12 +22,13 @@ wss.on('connection', socket => {
         if (client.readyState === ws.OPEN) {
             intervals[client] = setInterval(timeout => {
                 for (let item in items) {
+                    // Dummy data
                     items[item]['price'] += rand(-10, 10);
                     items[item]['amount'] += Math.floor(rand(-100, 100));
                     client.send(JSON.stringify({
                         'item': item,
-                        'price': items[item]['price'],
-                        'amount': items[item]['amount']
+                        'price': Math.abs(items[item]['price']).toFixed(2),
+                        'amount': Math.abs(items[item]['amount'])
                     }));
                 }
             }, 2000); // every 2 seconds
