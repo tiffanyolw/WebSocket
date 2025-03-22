@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" contents="width-device-width, initial-scale=1.0">
+        <title>Data Updates</title>
+        <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+        <style>
+            .positive {
+                background-color: #d4edda; /* Light green */
+            }
+            .negative {
+                background-color: #f8d7da; /* Light red */
+            }
+            .highlight {
+                transition: background-color 1s ease; /* Smooth transition */
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <h1 class="mt-5">Real-Time Data</h1>
+            <div class="form-group">
+                <label for="cat-select">Select:</label>
+                <select class="form-control" id="cat-select">
+                    {% for i in categories %}
+                        <option value="{{ i }}">{{ i }}</option>
+                    {% endfor %}
+                </select>
+                <button class="btn btn-primary mt-2" id="subscibe-btn">Subscribe</button>
+                <button class="btn btn-danger mt-2" id="unsubscibe-btn">Unsubscribe</button>
+            </div>
+            <table class="table table-bordered mt-3">
+                <thead>
+                    <tr>
+                        <td>Item</td>
+                        <td>Price</td>
+                        <td>Sold</td>
+                        <td>Remaining</td>
+                        <td>% Sold</td>
+                    </tr>
+                </thead>
+                <tbody id="table-data">
+                    <!-- Table data will be inserted here -->
+                </tbody>
+            </table>
+        </div>
+        <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
+        <script type="text/javascript">
+            $(document).ready(function() {
+                var socket = io.connect('http://127.0.0.1:5000/update')
+
+                function handleColUpdate(all_data){
+                    all_data.forEach(data => {
+                        if (!data['Item']) { return; }
+                        var row = $('#table-data').find('tr[data-row="' + data['Item'] + '"]');
+                        if (row.length) {
+                            // Update existing row
+                            updateCell(row.find('td').eq(1), data['Price'], data['Price'] - parseFloat(row.find('td').eq(1).text()));
+                            updateCell(row.find('td').eq(2), data['Sold'], data['Sold'] - parseInt(row.find('td').eq(2).text()));
+                            updateCell(row.find('td').eq(3), data['Remaining'], data['Remaining'] - parseInt(row.find('td').eq(3).text()));
+                            updateCell(row.find('td').eq(4), data['% Sold'], data['% Sold'] - parseFloat(row.find('td').eq(4).text()));
+                        } else {
+                            // Add new row
+                            $('#table-data').append(
+                                '<tr data-row="' + data['Item'] + '">' +
+                                '<td>' + data['Item'] + '</td>' +
+                                '<td>' + data['Price'] + '</td>' +
+                                '<td>' + data['Sold'] + '</td>' +
+                                '<td>' + data['Remaining'] + '</td>' +
+                                '<td>' + data['% Sold'] + '</td>' +
+                                '</tr>'
+                            );
+                        }
+                    });
+                }
+
+                function updateCell(cell, newValue, diff) {
+                    var originalColor = cell.css('background-color');
+                    cell.text(newValue);
+
+                    // Highlight
+                    if (diff > 0) {
+                        cell.removeClass('negative').addClass('positive highlight');
+                    } else if (diff < 0) {
+                        cell.removeClass('positive').addClass('negative highlight');
+                    }
+
+                    setTimeout(function() {
+                        cell.removeClass('highlight');
+                    }, 1000);
+                }
+
+                // Subscribe
+                $('#subscribe-btn').click(function() {
+                    var category= $('#cat-select').val();
+                    socket.emit('subscribe', {'category': category});
+                    socket.on(`category_update_${category}`, handleColUpdate);
+                    console.log(`Subscribed to category_update_${category}`);
+                });
+
+                // Unsubscribe
+                $('#unsubscribe-btn').click(function() {
+                    var category = $('#cat-select').val();
+                    socket.emit('unsubscibe', {'category': category});
+                    socket.off(`category_update_${category}`);
+                    console.log(`Unsubscribed from category_update_${category}`);
+                });
+
+            });
+        </script>
+    </body>
+</html>
