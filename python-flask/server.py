@@ -30,8 +30,8 @@ def cols_to_rows(data):
     for i in range(0, rows_count):
         row = {}
         for c in data['columns']:
-            col_nae = c['name']
-            row[col_name] = c['value'][i]
+            col_name = c['name']
+            row[col_name] = c['values'][i]
         row_data.append(row)
     return row_data 
 
@@ -48,9 +48,9 @@ def update_data():
             # Simulate changes
             for row in [r for r in data if r['Category'] == category]:
                 row['Price'] = row['Price'] + round(random.uniform(0, 5), 2)
-                row['Sold'] = row['Sold'] + randint(-100, 100)
-                row['Remaining'] = row['Remaining'] + randint(-100, 100)
-                row['% Sold'] = row['% Sold'] + randint(-100, 100)
+                row['Sold'] = row['Sold'] + random.uniform(-100, 100)
+                row['Remaining'] = row['Remaining'] + random.uniform(-100, 100)
+                row['% Sold'] = row['% Sold'] + random.uniform(-100, 100)
                 emit_data.append(row)
             
             # Emit
