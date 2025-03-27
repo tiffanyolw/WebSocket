@@ -75,14 +75,14 @@ def handle_disconnect():
     print(f'Client {request.sid} disconnected')
 
 @socketio.on('subscribe', namespace='/update')
-def handle_subscribe():
+def handle_subscribe(data):
     category = data['category']
     clients[request.sid] = {'category': category}
     emit(f'category_update_{category}', [])
     print(f'Client {request.sid} subscribed to {category}')
 
 @socketio.on('unsubscribe', namespace='/update')
-def handle_insubscribe():
+def handle_unsubscribe():
     category = data['category']
     clients[request.sid] = None
     print(f'Client {request.sid} unsubscribed from {category}')
