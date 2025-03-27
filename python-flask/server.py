@@ -82,7 +82,7 @@ def handle_subscribe(data):
     print(f'Client {request.sid} subscribed to {category}')
 
 @socketio.on('unsubscribe', namespace='/update')
-def handle_unsubscribe():
+def handle_unsubscribe(data):
     category = data['category']
     clients[request.sid] = None
     print(f'Client {request.sid} unsubscribed from {category}')
