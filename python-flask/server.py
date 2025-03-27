@@ -47,10 +47,10 @@ def update_data():
             
             # Simulate changes
             for row in [r for r in data if r['Category'] == category]:
-                row['Price'] = row['Price'] + round(random.uniform(0, 5), 2)
-                row['Sold'] = row['Sold'] + random.uniform(-100, 100)
-                row['Remaining'] = row['Remaining'] + random.uniform(-100, 100)
-                row['% Sold'] = row['% Sold'] + random.uniform(-100, 100)
+                row['Price'] = round(row['Price'] + random.uniform(0, 5), 2)
+                row['Sold'] = row['Sold'] + random.randint(-100, 100)
+                row['Remaining'] = row['Remaining'] + random.randint(-100, 100)
+                row['% Sold'] = round(row['% Sold'] + random.uniform(-100, 100))
                 emit_data.append(row)
             
             # Emit
