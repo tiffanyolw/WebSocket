@@ -54,7 +54,7 @@ def update_data():
                 emit_data.append(row)
             
             # Emit
-            socket.io.emit(f'category_update_{category}', emit_data, namespace='/update', to=client_id)
+            socketio.emit(f'category_update_{category}', emit_data, namespace='/update', to=client_id)
 
 thread = threading.Thread(target=update_data)
 thread.daemon = True
